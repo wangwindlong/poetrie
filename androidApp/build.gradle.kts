@@ -4,6 +4,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.compose")
     kotlin("plugin.serialization")
+    id("app.cash.sqldelight")
 }
 
 kotlin {

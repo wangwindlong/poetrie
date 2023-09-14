@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS poetrieEntity (
+  page INTEGER NOT NULL,
+  name TEXT NOT NULL PRIMARY KEY,
+  url TEXT NOT NULL
+);
+
+selectAllByPage:
+SELECT *
+FROM poetrieEntity
+WHERE page = :page;
+
+insert:
+INSERT OR REPLACE INTO poetrieEntity(page, name, url)
+VALUES ?;

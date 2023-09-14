@@ -1,4 +1,5 @@
 package net.wangyl.poetrie
+
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import net.wangyl.poetrie.model.BirdImage
+import kotlinx.serialization.json.Json
 
 data class BirdsUiState(
     val images: List<BirdImage> = emptyList(),
@@ -25,7 +27,11 @@ class BirdsViewModel : ViewModel() {
 
     private val httpClient = HttpClient {
         install(ContentNegotiation) {
-            json()
+            json(Json {
+                ignoreUnknownKeys = true
+                prettyPrint = true
+                isLenient = true
+            })
         }
     }
 
