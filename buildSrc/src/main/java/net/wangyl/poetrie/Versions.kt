@@ -13,8 +13,8 @@ object Versions {
     const val ktor = "2.3.1" // 2.3.2
     const val ktor_android = "2.3.1"
     const val sqlDelight = "2.0.0"
-    const val koin = "3.2.0"
-    const val koinCompose = "1.0.4"
+    const val koin = "3.5.0"
+    const val koinCompose = "1.1.0"
     const val imageLoader = "1.6.7"
     const val logbackClassic = "1.2.11"
     const val kotlinWrappersBom = "1.0.0-pre.624"
