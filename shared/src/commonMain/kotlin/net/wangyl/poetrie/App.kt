@@ -2,6 +2,7 @@ package net.wangyl.poetrie
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -62,7 +63,7 @@ fun App() {
 fun BirdsPage(viewModel: BirdsViewModel) {
     val uiState by viewModel.uiState.collectAsState()
     Column(
-        Modifier.fillMaxSize(),
+        Modifier.fillMaxSize().background(Color.LightGray),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

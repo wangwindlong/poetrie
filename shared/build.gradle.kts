@@ -155,6 +155,14 @@ kotlin {
 //            dependsOn(iosTest)
 //        }
     }
+
+    targets.filterIsInstance<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>().forEach{
+        it.binaries.filterIsInstance<org.jetbrains.kotlin.gradle.plugin.mpp.Framework>()
+            .forEach { lib ->
+                lib.isStatic = false
+                lib.linkerOpts.add("-lsqlite3")
+            }
+    }
 }
 
 android {
@@ -183,4 +191,5 @@ sqldelight {
             packageName.set("net.wangyl.poetrie.core.database")
         }
     }
+    linkSqlite = true
 }
