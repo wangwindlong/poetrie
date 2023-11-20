@@ -29,9 +29,9 @@ struct GridItemView: View {
                 .cornerRadius(8)
                 .background(Color.gray)
                 .overlay(RoundedRectangle(cornerRadius: 15, style: .continuous)
-                    .foregroundColor(Color.black).padding(5)
+                    .foregroundColor(Color.clear).padding(5)
                 )
-                .overlay(Image(systemName: "plus").resizable()
+                .overlay(Image(systemName: "plus")
                     .scaledToFit())
             }
         }

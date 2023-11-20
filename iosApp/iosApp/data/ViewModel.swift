@@ -23,7 +23,11 @@ class ViewModel: ObservableObject {
             print("getOrderInfo result=\(result), error=\(error)")
             if let result {
                 DispatchQueue.main.async {
-                    self.orderResponse = result
+                    if result.id == 0 {
+                        self.responseText = "未找到货品，请重新扫码"
+                    } else {
+                        self.orderResponse = result
+                    }
                 }
             }
             else if let error = error {

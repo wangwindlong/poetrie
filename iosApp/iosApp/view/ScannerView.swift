@@ -190,7 +190,7 @@ struct ScannerView: UIViewControllerRepresentable {
                 print("processItem barCode=\(barCode)")
                 if let barCode {
                     parent.viewModel.getOrderInfo(barCode)
-                    parent.viewModel.barCode = barCode
+//                    parent.viewModel.barCode = barCode
                 }
                 break
             @unknown default:
