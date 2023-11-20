@@ -11,6 +11,6 @@ class CuiRepositoryImpl: CuiRepository, KoinComponent {
     private val cuiClient by inject<HttpLoader>()
 
     override suspend fun getOrderInfo(barCode: String): CuiModel {
-        return cuiClient.getOrderInfo(barCode).data ?: throw PoetrieException(PoetrieError.ServerError)
+        return cuiClient.getOrderInfo(barCode).data ?: CuiModel(0)
     }
 }

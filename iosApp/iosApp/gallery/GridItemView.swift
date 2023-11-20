@@ -26,7 +26,7 @@ struct GridItemView: View {
             } else {
                 ZStack{}
                 .frame(width: size , height: size)
-                .cornerRadius(15)
+                .cornerRadius(8)
                 .background(Color.gray)
                 .overlay(RoundedRectangle(cornerRadius: 15, style: .continuous)
                     .foregroundColor(Color.black).padding(5)

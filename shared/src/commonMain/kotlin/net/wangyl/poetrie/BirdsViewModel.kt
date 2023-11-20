@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
 import net.wangyl.poetrie.model.BirdImage
 import kotlinx.serialization.json.Json
 
@@ -25,12 +26,14 @@ class BirdsViewModel : ViewModel() {
     private val _uiState = MutableStateFlow<BirdsUiState>(BirdsUiState())
     val uiState = _uiState.asStateFlow()
 
+    @OptIn(ExperimentalSerializationApi::class)
     private val httpClient = HttpClient {
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
                 prettyPrint = true
                 isLenient = true
+                explicitNulls = false
             })
         }
     }

@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class BaseCuiModel<T>(val message: String,val code: Int = 0, val data: T? = null) {
+data class BaseCuiModel<T>(val message: String, val code: Int = 0, val data: T? = null) {
     inline fun <reified T: Any> result() : T {
         return (data!!) as (T)
     }
