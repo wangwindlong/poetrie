@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -26,18 +27,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.SlideTransition
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import net.wangyl.poetrie.model.BirdImage
+import net.wangyl.poetrie.screen.MainScreen
+import net.wangyl.poetrie.vm.CuiViewModel
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun BirdAppTheme(
-    content: @Composable () -> Unit
-) {
+fun AppTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colors = MaterialTheme.colors.copy(primary = Color.Black),
         shapes = MaterialTheme.shapes.copy(
@@ -52,13 +55,23 @@ fun BirdAppTheme(
 
 @Composable
 fun App() {
-    BirdAppTheme {
-        val birdsViewModel = getViewModel(Unit, viewModelFactory { BirdsViewModel() })
-        BirdsPage(birdsViewModel)
+    AppTheme {
+//        val birdsViewModel = getViewModel(Unit, viewModelFactory { BirdsViewModel() })
+//        BirdsPage(birdsViewModel)
+        Navigator(
+            screen = MainScreen(index = 0),
+            onBackPressed = { currentScreen ->
+                println("Navigator: Pop screen #${currentScreen}")
+                true
+            }
+        ) { navigator ->
+            SlideTransition(navigator) { screen ->
+                screen.Content()
+            }
+        }
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun BirdsPage(viewModel: BirdsViewModel) {
     val uiState by viewModel.uiState.collectAsState()
@@ -92,7 +105,7 @@ fun BirdsPage(viewModel: BirdsViewModel) {
                 }
             }
         }
-        AnimatedVisibility(uiState.selectedImages.isNotEmpty()) {
+//        AnimatedVisibility(uiState.selectedImages.isNotEmpty()) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
@@ -104,7 +117,7 @@ fun BirdsPage(viewModel: BirdsViewModel) {
                     }
                 }
             )
-        }
+//        }
     }
 }
 

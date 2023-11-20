@@ -1,16 +1,35 @@
 PODS:
+  - AlertToast (1.3.9)
+  - QCloudCore (6.3.1):
+    - QCloudCore/Default (= 6.3.1)
+  - QCloudCore/Default (6.3.1)
+  - QCloudCOSXML (6.3.1):
+    - QCloudCOSXML/Default (= 6.3.1)
+  - QCloudCOSXML/Default (6.3.1):
+    - QCloudCore (= 6.3.1)
   - shared (1.0)
 
 DEPENDENCIES:
+  - AlertToast
+  - QCloudCOSXML
   - shared (from `../shared`)
+
+SPEC REPOS:
+  trunk:
+    - AlertToast
+    - QCloudCore
+    - QCloudCOSXML
 
 EXTERNAL SOURCES:
   shared:
     :path: "../shared"
 
 SPEC CHECKSUMS:
+  AlertToast: e8db15da727beff75500bcf33a78cd617f408fa1
+  QCloudCore: 62a2bb4d3ccb23fffe81f212f838f55ae15090c9
+  QCloudCOSXML: de4c48e29c3111e51aeab9a82af2ffe5bf144fe7
   shared: e83270c6da8acdcac75ed2c1fdef627361f74be8
 
-PODFILE CHECKSUM: f282da88f39e69507b0a255187c8a6b644477756
+PODFILE CHECKSUM: 17a580fcead1620d889cf576751153a32fb0ef38
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.13.0

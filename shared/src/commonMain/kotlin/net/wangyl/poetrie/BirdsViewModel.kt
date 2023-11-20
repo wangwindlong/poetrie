@@ -18,7 +18,7 @@ data class BirdsUiState(
     val selectedCategory: String? = null
 ) {
     val categories = images.map { it.category }.toSet()
-    val selectedImages = images.filter { it.category == selectedCategory }
+    val selectedImages = images.filter { selectedCategory == null || it.category == selectedCategory }
 }
 
 class BirdsViewModel : ViewModel() {

@@ -11,6 +11,7 @@ plugins {
     id("org.jetbrains.compose").apply(false)
     kotlin("plugin.serialization").apply(false)
     id("app.cash.sqldelight").apply(false)
+//    id("org.jetbrains.kotlin.android") version "1.9.10" apply false
 }
 
 tasks.register("clean", Delete::class) {
