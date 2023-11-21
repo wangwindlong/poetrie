@@ -16,6 +16,12 @@ struct Item: Identifiable {
 
 }
 
+extension Item {
+    var isPlus: Bool {
+        itemType == .empty
+    }
+}
+
 enum ItemType {
     case photo
     case video

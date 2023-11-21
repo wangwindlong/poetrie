@@ -78,7 +78,7 @@ struct ScannerView: UIViewControllerRepresentable {
             scannerViewController.stopScanning()
             guard let navController = uiViewController.navigationController else { return }
 //            let vc = UIHostingController(rootView: CameraView(viewModel))
-            let vc = UIHostingController(rootView: GridView().environmentObject(viewModel).environmentObject(GalleryModel()))
+            let vc = UIHostingController(rootView: TestContent().environmentObject(viewModel).environmentObject(GalleryModel()))
             navController.popViewController(animated: true)
             navController.pushViewController(vc, animated: true)
         }  else {
