@@ -40,7 +40,7 @@ struct ScannerView: UIViewControllerRepresentable {
         DataScannerViewController.isAvailable
     }
     
-    func makeUIViewController(context: Context) -> DataScannerViewController {
+    func makeUIViewController(context: Context) -> UINavigationController {
         scannerViewController.delegate = context.coordinator
         
         // Add a button to start scanning
@@ -64,23 +64,31 @@ struct ScannerView: UIViewControllerRepresentable {
             scanButton.centerXAnchor.constraint(equalTo: scannerViewController.view.centerXAnchor),
             scanButton.bottomAnchor.constraint(equalTo: scannerViewController.view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
         ])
-        
-        return scannerViewController
+        let navigationController = UINavigationController(rootViewController: scannerViewController)
+        return navigationController
+//        return scannerViewController
     }
     
-    func updateUIViewController(_ uiViewController: DataScannerViewController, context: Context) {
+    func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {
         // Update any view controller settings here
         print("updateUIViewController isExit=\(isExit) barCode=\(viewModel.barCode)")
         if isExit {
             scannerViewController.stopScanning()
             uiViewController.navigationController?.popViewController(animated: true)
+        } else if let error = viewModel.responseText {
+            viewModel.responseText = nil
+            viewModel.orderResponse = nil
+            try? scannerViewController.startScanning()
         } else if let order = viewModel.orderResponse {
             scannerViewController.stopScanning()
-            guard let navController = uiViewController.navigationController else { return }
+//            guard let navController = uiViewController.navigationController else { return }
 //            let vc = UIHostingController(rootView: CameraView(viewModel))
-            let vc = UIHostingController(rootView: TestContent().environmentObject(viewModel).environmentObject(GalleryModel()))
-            navController.popViewController(animated: true)
-            navController.pushViewController(vc, animated: true)
+            let content = TestContent()
+//            _ = content.environmentObject(viewModel).environmentObject(GalleryModel())
+            let vc = MyHostingController(rootView: content)
+            vc.modalPresentationStyle = .popover
+            uiViewController.setViewControllers([vc], animated: true)
+            
         }  else {
             try? scannerViewController.startScanning()
         }
@@ -189,6 +197,7 @@ struct ScannerView: UIViewControllerRepresentable {
                 let barCode = barCodeResult.observation.payloadStringValue
                 print("processItem barCode=\(barCode)")
                 if let barCode {
+                    parent.scannerViewController.stopScanning()
                     parent.viewModel.getOrderInfo(barCode)
 //                    parent.viewModel.barCode = barCode
                 }
@@ -214,5 +223,62 @@ struct ScannerView: UIViewControllerRepresentable {
         func popUp() {
             parent.isExit = true
         }
+    }
+}
+
+class MyHostingController: UIHostingController<TestContent> {
+    
+    override init(rootView: TestContent) {
+        super.init(rootView: rootView)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(dismisss))
+    }
+    
+    @MainActor required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+    
+    @objc func dismisss() {
+        print("dismisss clicked navigationController=\(navigationController) self=\(self)")
+//        navigationController?.popViewController(animated: true)
+//        dismiss(animated: true)
+        self.navigationController?.popToRootViewController(animated: false)
+    }
+}
+
+//https://juejin.cn/post/6984026677161099294
+extension UIViewController {
+    public func present<Content: View>(presentationStyle: UIModalPresentationStyle = .automatic, transitionStyle: UIModalTransitionStyle = .coverVertical, animated: Bool = true, completion: @escaping () -> Void = {}, @ViewBuilder builder: () -> Content) {
+        let toPresent = UIHostingController(rootView: AnyView(EmptyView()))
+        toPresent.modalPresentationStyle = presentationStyle
+        toPresent.rootView = AnyView(
+            builder()
+                .environment(\.viewController, ViewControllerHolder(toPresent))
+        )
+        if presentationStyle == .overCurrentContext {
+            toPresent.view.backgroundColor = .clear
+        }
+        self.present(toPresent, animated: animated, completion: completion)
+    }
+}
+
+public struct ViewControllerHolder {
+    public weak var value: UIViewController?
+    init(_ value: UIViewController?) {
+        self.value = value
+    }
+}
+
+public struct ViewControllerKey: EnvironmentKey {
+    public static var defaultValue: ViewControllerHolder { return ViewControllerHolder(nil) }
+}
+
+extension EnvironmentValues {
+    public var viewController: ViewControllerHolder {
+        get { return self[ViewControllerKey.self] }
+        set { self[ViewControllerKey.self] = newValue }
     }
 }

@@ -13,11 +13,19 @@ import Photos
 struct CameraViewControllerWrapper: UIViewControllerRepresentable {
     @EnvironmentObject var data: ViewModel
     @Binding var isActive: Bool
+    @State var exit: Bool = false
     
     func makeUIViewController(context: Context) -> UIViewController {
         let camera = ZLCustomCamera()
         camera.takeDoneBlock = { image, videoUrl in
             self.save(image: image, videoUrl: videoUrl)
+            exit = true
+        }
+        camera.cancelBlock = {
+            exit = true
+        }
+        camera.libraryBlock = {
+            exit = true
         }
         print("CameraViewControllerWrapper makeUIViewController")
         return camera
@@ -27,7 +35,14 @@ struct CameraViewControllerWrapper: UIViewControllerRepresentable {
         // 更新 viewController 的属性
 //        uiViewController.title = "Updated Title"
         print("CameraViewControllerWrapper updateUIViewController")
-        isActive = false
+//        isActive = false
+        if exit {
+            guard let navController = uiViewController.navigationController else { return }
+//            let vc = UIHostingController(rootView: CameraView(viewModel))
+//            let vc = UIHostingController(rootView: TestContent().environmentObject(viewModel).environmentObject(GalleryModel()))
+            navController.popViewController(animated: true)
+//            navController.pushViewController(vc, animated: true)
+        }
     }
     
     func save(image: UIImage?, videoUrl: URL?) {

@@ -44,6 +44,7 @@ open class ZLCustomCamera: UIViewController {
     @objc public var takeDoneBlock: ((UIImage?, URL?) -> Void)?
     
     @objc public var cancelBlock: (() -> Void)?
+    public var libraryBlock: (() -> Void)?
     
     public lazy var tipsLabel: UILabel = {
         let label = UILabel()
@@ -125,6 +126,15 @@ open class ZLCustomCamera: UIViewController {
         let btn = ZLEnlargeButton(type: .custom)
         btn.setImage(.zl.getImage("zl_camera_close"), for: .normal)
         btn.addTarget(self, action: #selector(dismissBtnClick), for: .touchUpInside)
+        btn.adjustsImageWhenHighlighted = false
+        btn.enlargeInset = 30
+        return btn
+    }()
+    
+    public lazy var libraryBtn: ZLEnlargeButton = {
+        let btn = ZLEnlargeButton(type: .custom)
+        btn.setImage(.zl.getImage("zl_camera_close"), for: .normal)
+        btn.addTarget(self, action: #selector(libraryBtnClick), for: .touchUpInside)
         btn.adjustsImageWhenHighlighted = false
         btn.enlargeInset = 30
         return btn
@@ -380,6 +390,7 @@ open class ZLCustomCamera: UIViewController {
         takedImageView.frame = previewFrame
         
         dismissBtn.frame = CGRect(x: 20, y: 60, width: 30, height: 30)
+        switchCameraBtn.frame = CGRect(x: 320, y: 60, width: 30, height: 30)
         retakeBtn.frame = CGRect(x: 20, y: 60, width: 28, height: 28)
         
         var bottomViewToBottomSpacing = view.zl.height - insets.bottom - ZLCustomCamera.Layout.bottomViewH
@@ -393,8 +404,8 @@ open class ZLCustomCamera: UIViewController {
         let smallCircleH = ZLCustomCamera.Layout.smallCircleRadius
         smallCircleView.frame = CGRect(x: (view.bounds.width - smallCircleH) / 2, y: (ZLCustomCamera.Layout.bottomViewH - smallCircleH) / 2, width: smallCircleH, height: smallCircleH)
         
-        flashBtn.frame = CGRect(x: 60, y: (ZLCustomCamera.Layout.bottomViewH - 25) / 2, width: 25, height: 25)
-        switchCameraBtn.frame = CGRect(x: bottomView.zl.width - 60 - 25, y: flashBtn.zl.top, width: 25, height: 25)
+        libraryBtn.frame = CGRect(x: 60, y: (ZLCustomCamera.Layout.bottomViewH - 25) / 2, width: 25, height: 25)
+        flashBtn.frame = CGRect(x: bottomView.zl.width - 60 - 25, y: libraryBtn.zl.top, width: 25, height: 25)
         
         let tipsTextHeight = (tipsLabel.text ?? " ").zl
             .boundingRect(
@@ -418,15 +429,16 @@ open class ZLCustomCamera: UIViewController {
         view.backgroundColor = .black
         
         view.addSubview(dismissBtn)
+        view.addSubview(switchCameraBtn)
         view.addSubview(takedImageView)
         view.addSubview(focusCursorView)
         view.addSubview(tipsLabel)
         view.addSubview(bottomView)
         
-        bottomView.addSubview(flashBtn)
+        bottomView.addSubview(libraryBtn)
         bottomView.addSubview(largeCircleView)
         bottomView.addSubview(smallCircleView)
-        bottomView.addSubview(switchCameraBtn)
+        bottomView.addSubview(flashBtn)
         
         var takePictureTap: UITapGestureRecognizer?
         if cameraConfig.allowTakePhoto {
@@ -470,6 +482,7 @@ open class ZLCustomCamera: UIViewController {
         
         let pinchGes = UIPinchGestureRecognizer(target: self, action: #selector(pinchToAdjustCameraFocus(_:)))
         view.addGestureRecognizer(pinchGes)
+        loadPhoto()
     }
     
     private func observerDeviceMotion() {
@@ -753,9 +766,11 @@ open class ZLCustomCamera: UIViewController {
     }
     
     @objc private func dismissBtnClick() {
-        dismiss(animated: true) {
-            self.cancelBlock?()
-        }
+        self.cancelBlock?()
+    }
+    
+    @objc private func libraryBtnClick() {
+        self.libraryBlock?()
     }
     
     @objc private func retakeBtnClick() {
@@ -827,6 +842,35 @@ open class ZLCustomCamera: UIViewController {
                 zl_debugPrint("切换摄像头失败 \(error.localizedDescription)")
             }
         }
+    }
+    
+    private func loadPhoto() {
+        let config = ZLPhotoConfiguration.default()
+        ZLPhotoManager.getCameraRollAlbum(allowSelectImage: config.allowSelectImage, allowSelectVideo: config.allowSelectVideo) { [weak self] cameraRoll in
+            guard let self else { return }
+            var totalPhotos = ZLPhotoManager.fetchPhoto(in: cameraRoll.result, ascending: false, allowSelectImage: config.allowSelectImage, allowSelectVideo: config.allowSelectVideo, limitCount: 3)
+            var arrSelectedModels: [ZLPhotoModel] = []
+            markSelected(source: &totalPhotos, selected: &arrSelectedModels)
+            if totalPhotos.count > 0 {
+                let top = totalPhotos[0]
+                fetchSmallImage(top)
+            }
+        }
+    }
+    
+    private func fetchSmallImage(_ model: ZLPhotoModel) {
+        let size: CGSize
+        let maxSideLength = libraryBtn.bounds.width * 2
+        if model.whRatio > 1 {
+            let w = maxSideLength * model.whRatio
+            size = CGSize(width: w, height: maxSideLength)
+        } else {
+            let h = maxSideLength / model.whRatio
+            size = CGSize(width: maxSideLength, height: h)
+        }
+        let smallImageRequestID = ZLPhotoManager.fetchImage(for: model.asset, size: size, completion: { [weak self] image, isDegraded in
+            self?.libraryBtn.setImage(image, for: .normal)
+        })
     }
     
     private func canEditImage() -> Bool {

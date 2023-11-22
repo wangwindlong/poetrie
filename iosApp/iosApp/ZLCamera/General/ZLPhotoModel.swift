@@ -61,7 +61,7 @@ public class ZLPhotoModel: NSObject {
         return size
     }
     
-    private var pri_editImage: UIImage?
+    public var pri_editImage: UIImage?
     
     public var editImage: UIImage? {
         set {

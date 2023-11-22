@@ -24,10 +24,12 @@ struct TestContent: View {
     }
     
     var body: some View {
-        ScrollView {
-            VStack {
-                ForEach(0...2, id: \.self) { i in
-                    PhotoRow(index: i, isToggled: getToggled(i))
+        NavigationStack {
+            ScrollView {
+                VStack {
+                    ForEach(0...2, id: \.self) { i in
+                        PhotoRow(index: i, isToggled: getToggled(i))
+                    }
                 }
             }
         }
@@ -38,8 +40,8 @@ struct PhotoRow: View {
     var index: Int
     @Binding var isToggled: Bool
     
-    @EnvironmentObject var dataModel: GalleryModel
-    @EnvironmentObject var viewModel: ViewModel
+//    @EnvironmentObject var dataModel: GalleryModel
+//    @EnvironmentObject var viewModel: ViewModel
 
     private static let initialColumns = 3
     @State private var isAddingPhoto = false
@@ -72,7 +74,6 @@ struct PhotoRow: View {
     }
     
     var body: some View {
-        
         VStack {
             TitleRow(title: getTitle(),
                      subTitle: getSubTitle(),
@@ -80,37 +81,43 @@ struct PhotoRow: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             
             LazyVGrid(columns: gridColumns) {
-                ForEach(dataModel.items) { item in
-                    GeometryReader { geo in
-                        if item.isPlus {
-                            NavigationLink(
-                                destination: CameraViewControllerWrapper(isActive: $isActive),
-                                isActive: $isActive) {
-                                    GridItemView(size: geo.size.width, item: item)
-                            }
-                        } else {
-                            NavigationLink(destination: DetailView(item: item)) {
-                                GridItemView(size: geo.size.width, item: item)
-                            }
-                        }
-                    }
-                    .cornerRadius(8.0)
-                    .aspectRatio(1, contentMode: .fit)
-                    .overlay(alignment: .topTrailing) {
-                        if isEditing && !item.isPlus {
-                            Button {
-                                withAnimation {
-                                    dataModel.removeItem(item)
-                                }
-                            } label: {
-                                Image(systemName: "xmark.square.fill")
-                                            .font(Font.title)
-                                            .symbolRenderingMode(.palette)
-                                            .foregroundStyle(.white, .red)
-                            }
-                            .offset(x: 7, y: -7)
-                        }
-                    }
+//                ForEach(dataModel.items) { item in
+//                    GeometryReader { geo in
+//                        if item.isPlus {
+//                            NavigationLink(
+//                                destination: CameraViewControllerWrapper(isActive: $isActive)
+//                                    .navigationBarTitle("")
+//                                    .navigationBarHidden(true)) {
+//                                    GridItemView(size: geo.size.width, item: item)
+//                            }
+//                        } else {
+//                            NavigationLink(destination: DetailView(item: item)) {
+//                                GridItemView(size: geo.size.width, item: item)
+//                            }
+//                        }
+//                    }
+//                    .cornerRadius(8.0)
+//                    .aspectRatio(1, contentMode: .fit)
+//                    .overlay(alignment: .topTrailing) {
+//                        if isEditing && !item.isPlus {
+//                            Button {
+////                                withAnimation {
+////                                    dataModel.removeItem(item)
+////                                }
+//                            } label: {
+//                                Image(systemName: "xmark.square.fill")
+//                                            .font(Font.title)
+//                                            .symbolRenderingMode(.palette)
+//                                            .foregroundStyle(.white, .red)
+//                            }
+//                            .offset(x: 7, y: -7)
+//                        }
+//                    }
+//                }
+                Button {
+                    
+                } label: {
+                    Text("tesss")
                 }
             }
             .padding()
