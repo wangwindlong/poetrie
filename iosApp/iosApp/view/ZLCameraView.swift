@@ -12,10 +12,20 @@ import Photos
 
 struct CameraViewControllerWrapper: UIViewControllerRepresentable {
     @EnvironmentObject var data: ViewModel
-    @Binding var isActive: Bool
+    @EnvironmentObject var galleryModel: GalleryModel
+    var onlyVideo: Bool = false
+    var isCompress: Bool = true
     @State var exit: Bool = false
+    var index: Int = 0
     
     func makeUIViewController(context: Context) -> UIViewController {
+        ZLPhotoConfiguration.default()
+            .cameraConfiguration
+            .allowRecordVideo(onlyVideo)
+            .allowTakePhoto(!onlyVideo)
+            .allowSwitchCamera(false)
+            .showFlashSwitch(true)
+            .sessionPreset(.hd1280x720)
         let camera = ZLCustomCamera()
         camera.takeDoneBlock = { image, videoUrl in
             self.save(image: image, videoUrl: videoUrl)
@@ -27,6 +37,9 @@ struct CameraViewControllerWrapper: UIViewControllerRepresentable {
         camera.libraryBlock = {
             exit = true
         }
+        camera.isCompress = {
+            isCompress
+        }
         print("CameraViewControllerWrapper makeUIViewController")
         return camera
     }
@@ -35,7 +48,6 @@ struct CameraViewControllerWrapper: UIViewControllerRepresentable {
         // 更新 viewController 的属性
 //        uiViewController.title = "Updated Title"
         print("CameraViewControllerWrapper updateUIViewController")
-//        isActive = false
         if exit {
             guard let navController = uiViewController.navigationController else { return }
 //            let vc = UIHostingController(rootView: CameraView(viewModel))
@@ -46,6 +58,7 @@ struct CameraViewControllerWrapper: UIViewControllerRepresentable {
     }
     
     func save(image: UIImage?, videoUrl: URL?) {
+        print("save image")
         if let image = image {
             let hud = ZLProgressHUD.show(toast: .processing)
             ZLPhotoManager.saveImageToAlbum(image: image) { suc, asset in
@@ -55,6 +68,7 @@ struct CameraViewControllerWrapper: UIViewControllerRepresentable {
                     self.data.appendSelectedResults([resultModel])
                     self.data.appendImages([image])
                     self.data.appendSelectedResults([asset])
+                    self.galleryModel.addItem(Item(url: asset.getPhotoURL(), itemType: .photo))
                 } else {
                     debugPrint("保存图片到相册失败")
                 }
@@ -64,7 +78,7 @@ struct CameraViewControllerWrapper: UIViewControllerRepresentable {
             let hud = ZLProgressHUD.show(toast: .processing)
             ZLPhotoManager.saveVideoToAlbum(url: videoUrl) { suc, asset in
                 if suc, let asset = asset {
-                    self.fetchImage(for: asset)
+                    self.fetchImage(for: asset, videoUrl: videoUrl)
                 } else {
                     debugPrint("保存视频到相册失败")
                 }
@@ -73,7 +87,7 @@ struct CameraViewControllerWrapper: UIViewControllerRepresentable {
         }
     }
     
-    func fetchImage(for asset: PHAsset) {
+    func fetchImage(for asset: PHAsset, videoUrl: URL) {
         let option = PHImageRequestOptions()
         option.resizeMode = .fast
         option.isNetworkAccessAllowed = true
@@ -89,7 +103,17 @@ struct CameraViewControllerWrapper: UIViewControllerRepresentable {
                 self.data.appendSelectedResults([resultModel])
                 self.data.appendImages([image])
                 self.data.appendSelectedResults([asset])
+                self.galleryModel.addItem(Item(url: videoUrl, image: image, itemType: .video), type: 1)
             }
         }
+    }
+}
+
+extension PHAsset {
+    func getPhotoURL() -> URL? {
+        let source = PHAssetResource.assetResources(for: self).last
+        let url =  source?.value(forKey: "privateFileURL") as? URL
+        print("PHAsset getURL=\(url)")
+        return url
     }
 }

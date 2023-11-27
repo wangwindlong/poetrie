@@ -19,13 +19,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import dev.icerock.moko.mvvm.compose.getViewModel
+import dev.icerock.moko.mvvm.compose.viewModelFactory
 import net.wangyl.poetrie.core.di.DIHelper
+import net.wangyl.poetrie.vm.CuiViewModel
 
 data class MainScreen(var index: Int, val wrapContent: Boolean = false): BaseScreen() {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-
+        val viewModel = getViewModel(Unit, viewModelFactory { CuiViewModel() })
         Row(
             Modifier.fillMaxWidth().height(160.dp).padding(5.dp),
             horizontalArrangement = Arrangement.Start
@@ -34,7 +37,8 @@ data class MainScreen(var index: Int, val wrapContent: Boolean = false): BaseScr
                 shape = RoundedCornerShape(16.dp),
                 onClick = {
 //                    viewModel.selectCategory(category)
-                    navigator.push(DetailScreen(1))
+//                    navigator.push(DetailScreen(1))
+                    viewModel.uploadImages()
                 },
                 modifier = Modifier.weight(0.3f).fillMaxSize(),
                 elevation = ButtonDefaults.elevation(

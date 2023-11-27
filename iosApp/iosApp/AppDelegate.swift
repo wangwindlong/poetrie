@@ -22,9 +22,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, QCloudSignatureProvider {
         QCloudCOSXMLService.registerDefaultCOSXML(with: config)
         QCloudCOSTransferMangerService.registerDefaultCOSTransferManger(
             with: config)
-//        DispatchQueue.global().asyncAfter(deadline: .now() + 5) {
-//            UploadUtils.updatePic(img: UIImage(named: "AppIcon")!)
-//        }
+        DispatchQueue.global().asyncAfter(deadline: .now() + 5) {
+            UploadUtils.uploadPic(img: UIImage(named: "AppIcon")!)
+        }
     }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions:

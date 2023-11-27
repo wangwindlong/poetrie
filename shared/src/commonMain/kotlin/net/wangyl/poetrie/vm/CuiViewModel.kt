@@ -15,6 +15,8 @@ import kotlinx.serialization.json.Json
 import net.wangyl.poetrie.core.repository.CuiRepository
 import net.wangyl.poetrie.model.BaseCuiModel
 import net.wangyl.poetrie.model.CuiModel
+import net.wangyl.poetrie.model.CuiPicModel
+import net.wangyl.poetrie.model.CuiPicParams
 import net.wangyl.poetrie.net.Api
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -47,6 +49,26 @@ class CuiViewModel : ViewModel(), KoinComponent {
             _uiState.update {
                 it.copy(model = info)
             }
+        }
+    }
+
+    private fun getParams(): CuiPicParams {
+        return CuiPicParams(id = 111.toLong(),
+            fcPic = CuiPicModel(PICLIST = arrayOf("url1", "url2")),
+            fcVideo = CuiPicModel(PICLIST = arrayOf("videoUrl1", "videoUrl2")),
+            sring = CuiPicModel(PICLIST = arrayOf("largevideoUrl1", "largevideoUrl2")),
+            isSring = "1",
+            )
+    }
+
+    fun uploadImages(params: CuiPicParams = getParams()) {
+        print("uploadImages params = $params")
+        viewModelScope.launch {
+            val info = cuiRepository.uploadImages(params)
+            print("uploadImages result = $info")
+//            _uiState.update {
+//                it.copy(model = info)
+//            }
         }
     }
 //    private suspend fun getOrderInfo(): CuiModel {

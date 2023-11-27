@@ -45,6 +45,7 @@ open class ZLCustomCamera: UIViewController {
     
     @objc public var cancelBlock: (() -> Void)?
     public var libraryBlock: (() -> Void)?
+    public var isCompress: (() -> Bool) = { true }
     
     public lazy var tipsLabel: UILabel = {
         let label = UILabel()
@@ -222,6 +223,8 @@ open class ZLCustomCamera: UIViewController {
     private var recordDurations: [Double] = []
     
     private var microPhontIsAvailable = true
+    
+    private var isFirstIn = true
     
     private lazy var focusCursorTapGes: UITapGestureRecognizer = {
         let tap = UITapGestureRecognizer()
@@ -542,6 +545,9 @@ open class ZLCustomCamera: UIViewController {
             let movieFileOutput = AVCaptureMovieFileOutput()
             // 解决视频录制超过10s没有声音的bug
             movieFileOutput.movieFragmentInterval = .invalid
+            // 配置captureSession
+//            self.session.sessionPreset = .high
+
             self.movieFileOutput = movieFileOutput
             
             // 添加视频输入
@@ -587,6 +593,7 @@ open class ZLCustomCamera: UIViewController {
         }
         
         let preset = cameraConfig.sessionPreset.avSessionPreset
+        print("preset=\(preset) \(session.canSetSessionPreset(preset)) \(session.canSetSessionPreset(ZLCameraConfiguration.CaptureSessionPreset.hd1280x720.avSessionPreset))")
         if device.supportsSessionPreset(preset), session.canSetSessionPreset(preset) {
             setSessionPreset(preset)
         } else {
@@ -1148,7 +1155,11 @@ open class ZLCustomCamera: UIViewController {
         if #available(iOS 11.0, *),
            movieFileOutput.availableVideoCodecTypes.contains(cameraConfig.videoCodecType),
            let connection = connection {
-            let outputSettings = [AVVideoCodecKey: cameraConfig.videoCodecType]
+            let outputSettings = [AVVideoCodecKey: cameraConfig.videoCodecType,
+                  AVVideoCompressionPropertiesKey: [
+                          AVVideoAverageBitRateKey: 1500000, // Adjust as needed
+                          AVVideoProfileLevelKey: AVVideoProfileLevelH264HighAutoLevel
+                  ]] as [String : Any]
             movieFileOutput.setOutputSettings(outputSettings, for: connection)
         }
         // 解决前置摄像头录制视频时候左右颠倒的问题

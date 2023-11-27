@@ -13,11 +13,11 @@ import VisionKit
 @available(iOS 16.0, *)
 @MainActor
 struct ScannerView: UIViewControllerRepresentable {
-    @StateObject private var viewModel = ViewModel()
+    @EnvironmentObject var viewModel: ViewModel
+    @EnvironmentObject var dataModel: GalleryModel
     static let cancelScanLabel = "返回"
     static let stopScanLabel = "Stop Scan"
     var isBarCode: Bool = false
-    @State var isExit = false
     
     @available(iOS 16.0, *)
     static let textDataType: DataScannerViewController.RecognizedDataType = .text(
@@ -27,7 +27,13 @@ struct ScannerView: UIViewControllerRepresentable {
             "ja_JP"
         ]
     )
-    var scannerViewController: DataScannerViewController = DataScannerViewController(
+    
+    var scannerAvailable: Bool {
+        DataScannerViewController.isSupported &&
+        DataScannerViewController.isAvailable
+    }
+    
+    var scannerViewController = DataScannerViewController(
         recognizedDataTypes: [ScannerView.textDataType, .barcode()],
         qualityLevel: .accurate,
         recognizesMultipleItems: false,
@@ -35,12 +41,7 @@ struct ScannerView: UIViewControllerRepresentable {
         isHighlightingEnabled: false
     )
     
-    var scannerAvailable: Bool {
-        DataScannerViewController.isSupported &&
-        DataScannerViewController.isAvailable
-    }
-    
-    func makeUIViewController(context: Context) -> UINavigationController {
+    func makeUIViewController(context: Context) -> DataScannerViewController {
         scannerViewController.delegate = context.coordinator
         
         // Add a button to start scanning
@@ -64,48 +65,38 @@ struct ScannerView: UIViewControllerRepresentable {
             scanButton.centerXAnchor.constraint(equalTo: scannerViewController.view.centerXAnchor),
             scanButton.bottomAnchor.constraint(equalTo: scannerViewController.view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
         ])
-        let navigationController = UINavigationController(rootViewController: scannerViewController)
-        return navigationController
-//        return scannerViewController
+        return scannerViewController
     }
     
-    func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {
+    func updateUIViewController(_ uiViewController: DataScannerViewController, context: Context) {
         // Update any view controller settings here
-        print("updateUIViewController isExit=\(isExit) barCode=\(viewModel.barCode)")
-        if isExit {
-            scannerViewController.stopScanning()
-            uiViewController.navigationController?.popViewController(animated: true)
+        print("updateUIViewController showScan=\(viewModel.showScan)")
+        if !viewModel.showScan {
+            uiViewController.stopScanning()
+            uiViewController.navigationController?.popViewController(animated: false)
         } else if let error = viewModel.responseText {
+            ZLProgressHUD.show(toast: .custome("条码信息获取失败：\(error)"), timeout: 1)
             viewModel.responseText = nil
             viewModel.orderResponse = nil
-            try? scannerViewController.startScanning()
-        } else if let order = viewModel.orderResponse {
-            scannerViewController.stopScanning()
-//            guard let navController = uiViewController.navigationController else { return }
-//            let vc = UIHostingController(rootView: CameraView(viewModel))
-            let content = TestContent()
-//            _ = content.environmentObject(viewModel).environmentObject(GalleryModel())
-            let vc = MyHostingController(rootView: content)
-            vc.modalPresentationStyle = .popover
-            uiViewController.setViewControllers([vc], animated: true)
-            
-        }  else {
-            try? scannerViewController.startScanning()
+            try? uiViewController.startScanning()
+        } else if let response = viewModel.orderResponse {
+            try? uiViewController.stopScanning()
+            popUp()
+        } else {
+            try? uiViewController.startScanning()
         }
     }
     
     func makeCoordinator() -> Coordinator {
-        return Coordinator(self, isExit: $isExit)
+        return Coordinator(self)
     }
     
     class Coordinator: NSObject, DataScannerViewControllerDelegate {
         var parent: ScannerView
-        @Binding var isExit: Bool
         var roundBoxMappings: [UUID: UIView] = [:]
         
-        init(_ parent: ScannerView, isExit: Binding<Bool>) {
+        init(_ parent: ScannerView) {
             self.parent = parent
-            self._isExit = isExit
         }
         
         func dataScanner(_ dataScanner: DataScannerViewController, didAdd addedItems: [RecognizedItem], allItems: [RecognizedItem]) {
@@ -154,7 +145,7 @@ struct ScannerView: UIViewControllerRepresentable {
             //let roundedRectView = RoundRectView(frame: frame)
             let roundedRectView = RoundedRectLabel(frame: frame)
             roundedRectView.setText(text: text)
-            parent.scannerViewController.overlayContainerView.addSubview(roundedRectView)
+//            parent.overlayContainerView.addSubview(roundedRectView)
             roundBoxMappings[item.id] = roundedRectView
         }
         
@@ -199,7 +190,6 @@ struct ScannerView: UIViewControllerRepresentable {
                 if let barCode {
                     parent.scannerViewController.stopScanning()
                     parent.viewModel.getOrderInfo(barCode)
-//                    parent.viewModel.barCode = barCode
                 }
                 break
             @unknown default:
@@ -216,18 +206,22 @@ struct ScannerView: UIViewControllerRepresentable {
 //                parent.scannerViewController.stopScanning()
 //                sender.setTitle(cancelScanLabel, for: .normal)
 //            }
-            parent.scannerViewController.stopScanning()
-            popUp()
+//            parent.scannerViewController.stopScanning()
+            parent.popUp()
         }
-        
-        func popUp() {
-            parent.isExit = true
-        }
+    }
+    
+    func popUp() {
+        viewModel.showScan = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+            self.viewModel.hasBarcode = true
+        })
+       
     }
 }
 
 class MyHostingController: UIHostingController<TestContent> {
-    
+        
     override init(rootView: TestContent) {
         super.init(rootView: rootView)
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(dismisss))
@@ -243,9 +237,9 @@ class MyHostingController: UIHostingController<TestContent> {
     
     @objc func dismisss() {
         print("dismisss clicked navigationController=\(navigationController) self=\(self)")
-//        navigationController?.popViewController(animated: true)
-//        dismiss(animated: true)
-        self.navigationController?.popToRootViewController(animated: false)
+        navigationController?.popViewController(animated: true)
+        dismiss(animated: true)
+//        self.navigationController?.popToRootViewController(animated: false)
     }
 }
 

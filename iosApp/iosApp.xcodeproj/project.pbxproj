@@ -123,6 +123,8 @@
 		B64A9D8F2B0BBB7D0099D0EA /* ZLEditVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64A9D4C2B0BBB7C0099D0EA /* ZLEditVideoViewController.swift */; };
 		B64A9D902B0BBB7D0099D0EA /* ZLEditorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64A9D4D2B0BBB7C0099D0EA /* ZLEditorManager.swift */; };
 		B64A9D912B0BBB7D0099D0EA /* ZLPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64A9D4E2B0BBB7C0099D0EA /* ZLPaths.swift */; };
+		B6F56DF72B12E56A003CB1BE /* PreviewVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F56DF62B12E56A003CB1BE /* PreviewVideoView.swift */; };
+		B6F56DF92B138864003CB1BE /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F56DF82B138864003CB1BE /* Date+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -245,6 +247,8 @@
 		B64A9D4C2B0BBB7C0099D0EA /* ZLEditVideoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZLEditVideoViewController.swift; sourceTree = "<group>"; };
 		B64A9D4D2B0BBB7C0099D0EA /* ZLEditorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZLEditorManager.swift; sourceTree = "<group>"; };
 		B64A9D4E2B0BBB7C0099D0EA /* ZLPaths.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZLPaths.swift; sourceTree = "<group>"; };
+		B6F56DF62B12E56A003CB1BE /* PreviewVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewVideoView.swift; sourceTree = "<group>"; };
+		B6F56DF82B138864003CB1BE /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		C0E5A5EAD40C82EFD0EE58D0 /* Pods_iosApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iosApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -357,6 +361,7 @@
 			isa = PBXGroup;
 			children = (
 				B64A9C862B09D7950099D0EA /* UploadUtils.swift */,
+				B6F56DF82B138864003CB1BE /* Date+Extensions.swift */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -368,6 +373,7 @@
 				B64A9C8C2B09E5C80099D0EA /* RoundRectView.swift */,
 				B64A9C8E2B09E5E20099D0EA /* RoundedRectLabel.swift */,
 				B64A9D042B0BBAE10099D0EA /* ZLCameraView.swift */,
+				B6F56DF62B12E56A003CB1BE /* PreviewVideoView.swift */,
 			);
 			path = view;
 			sourceTree = "<group>";
@@ -675,6 +681,7 @@
 				247C27F42AB66E7A00DD8D6D /* DoubleExtension.swift in Sources */,
 				B64A9D752B0BBB7D0099D0EA /* ZLClipImageDismissAnimatedTransition.swift in Sources */,
 				B64A9D582B0BBB7D0099D0EA /* ZLWeakProxy.swift in Sources */,
+				B6F56DF72B12E56A003CB1BE /* PreviewVideoView.swift in Sources */,
 				B64A9D842B0BBB7D0099D0EA /* UIColor+ZLPhotoBrowser.swift in Sources */,
 				B64A9CCA2B0B9A1C0099D0EA /* Test.swift in Sources */,
 				B64A9D592B0BBB7D0099D0EA /* ZLPhotoPreviewCell.swift in Sources */,
@@ -761,6 +768,7 @@
 				B64A9CC02B0A65C30099D0EA /* GridView.swift in Sources */,
 				B64A9CAB2B0A1C090099D0EA /* ViewfinderView.swift in Sources */,
 				B64A9D642B0BBB7D0099D0EA /* ZLPhotoPreviewController.swift in Sources */,
+				B6F56DF92B138864003CB1BE /* Date+Extensions.swift in Sources */,
 				B64A9D702B0BBB7D0099D0EA /* ZLPhotoConfiguration+Chaining.swift in Sources */,
 				B64A9CA72B0A1BE50099D0EA /* PhotoView.swift in Sources */,
 				247C27E12AB667A800DD8D6D /* SpeedTest.swift in Sources */,

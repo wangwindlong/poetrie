@@ -1,19 +1,13 @@
 package net.wangyl.poetrie.core.repository
 
-import io.ktor.client.HttpClient
-import io.ktor.client.request.get
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import kotlinx.coroutines.flow.Flow
-import net.wangyl.poetrie.core.network.handleErrors
-import net.wangyl.poetrie.core.network.model.PokemonResponse
-import net.wangyl.poetrie.core.network.NetworkConstants
-import net.wangyl.poetrie.core.network.model.Pokemon
+import net.wangyl.poetrie.model.BaseCuiModel
 import net.wangyl.poetrie.model.CuiModel
+import net.wangyl.poetrie.model.CuiPicParams
 
 // 翡翠相关api
 interface CuiRepository {
     suspend fun getOrderInfo(barCode: String): CuiModel
+    suspend fun uploadImages(params: CuiPicParams): BaseCuiModel<String>
 
 //    suspend fun getPokemonFlowByName(name: String): Result<PokemonInfo>
 //    suspend fun getFavoritePokemonListFlow(): Flow<List<Pokemon>>

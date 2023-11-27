@@ -32,19 +32,17 @@ struct ComposeView: UIViewControllerRepresentable {
 
 
 struct ContentView: View {
-    @StateObject var viewModel = ViewModel()
+    @EnvironmentObject var viewModel: ViewModel
     
     var body: some View {
-        NavigationStack {
-            VStack {
-                NavigationLink {
-                    ScannerView(isBarCode: true)
-                        .navigationBarTitle("")
-                        .navigationBarHidden(true)
-                } label: {
-                    Text("扫描条码").font(.title).padding()
-                }
-            }
-        }.environmentObject(viewModel)
+        VStack {
+            NavigationLink(destination: ScannerView(isBarCode: true).navigationBarTitle("扫码"),
+                           isActive: $viewModel.showScan,
+                           label: { Text("扫描条码").font(.title).padding()}
+            )
+            NavigationLink(destination: TestContent(), isActive: $viewModel.hasBarcode, label: {
+                EmptyView()
+            })
+        }
     }
 }

@@ -14,7 +14,9 @@ struct GridItemView: View {
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            if let url = item.url {
+            if let image = item.image {
+                Image(uiImage: image).frame(width: size, height: size)
+            } else if let url = item.url {
                 AsyncImage(url: url) { image in
                     image
                         .resizable()
@@ -34,6 +36,8 @@ struct GridItemView: View {
                 .overlay(Image(systemName: "plus")
                     .scaledToFit())
             }
+        }.onAppear {
+            print("GridItemView size = \(size)")
         }
     }
 }
