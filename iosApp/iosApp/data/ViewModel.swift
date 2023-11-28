@@ -23,6 +23,8 @@ class ViewModel: ObservableObject {
     @Published var isOriginal = false
     @Published var showScan = false
     @Published var hasBarcode = false
+    @Published var isError = false
+    @Published var errorMsg: String? = nil
     
     init() {
         
@@ -50,13 +52,14 @@ class ViewModel: ObservableObject {
     }
     
     func uploadImageUrls(_ dataModel: GalleryModel) {
-//        guard let order = orderResponse
-////                , dataModel.items.count > 0
-////                , dataModel.videoItems.count > 0
-//        else {
-//            responseText = "请拍摄图片和视频后再提交"
-//            return
-//        }
+        guard let order = orderResponse
+//                , dataModel.items.count > 0
+//                , dataModel.videoItems.count > 0
+        else {
+            isError = true
+            errorMsg = "请拍摄图片和视频后再提交"
+            return
+        }
         UploadUtils.uploadPicList(items: dataModel.items) { results in
             let fcPicList = results
             var videoList = [String]()

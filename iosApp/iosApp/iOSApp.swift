@@ -1,4 +1,5 @@
 import SwiftUI
+import AlertToast
 import shared
 
 @main
@@ -30,6 +31,8 @@ struct iOSApp: App {
             .environmentObject(dataModel)
             .onAppear {
                 delegate.initQCloud()
+            }.toast(isPresenting: $viewModel.isError) {
+                AlertToast(type: .regular, title: viewModel.errorMsg)
             }
         }
     }

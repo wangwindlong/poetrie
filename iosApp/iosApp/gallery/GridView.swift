@@ -16,7 +16,6 @@ struct GridView: View {
     private static let initialColumns = 3
     @State private var isAddingPhoto = false
     @State private var isEditing = false
-    @State private var isError = false
     
 
     @State private var gridColumns = Array(repeating: GridItem(.flexible()), count: initialColumns)
@@ -77,8 +76,8 @@ struct GridView: View {
                 }
                 .disabled(isEditing)
             }
-        }.toast(isPresenting: $isError) {
-            AlertToast(type: .regular, title: dataModel.error)
+        }.toast(isPresenting: $viewModel.isError) {
+            AlertToast(type: .regular, title: viewModel.errorMsg)
         }
     }
 }

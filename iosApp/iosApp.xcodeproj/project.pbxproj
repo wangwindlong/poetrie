@@ -125,6 +125,7 @@
 		B64A9D912B0BBB7D0099D0EA /* ZLPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64A9D4E2B0BBB7C0099D0EA /* ZLPaths.swift */; };
 		B6F56DF72B12E56A003CB1BE /* PreviewVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F56DF62B12E56A003CB1BE /* PreviewVideoView.swift */; };
 		B6F56DF92B138864003CB1BE /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F56DF82B138864003CB1BE /* Date+Extensions.swift */; };
+		B6F56DFB2B14E797003CB1BE /* OrderInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F56DFA2B14E797003CB1BE /* OrderInfoView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -249,6 +250,7 @@
 		B64A9D4E2B0BBB7C0099D0EA /* ZLPaths.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZLPaths.swift; sourceTree = "<group>"; };
 		B6F56DF62B12E56A003CB1BE /* PreviewVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewVideoView.swift; sourceTree = "<group>"; };
 		B6F56DF82B138864003CB1BE /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
+		B6F56DFA2B14E797003CB1BE /* OrderInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderInfoView.swift; sourceTree = "<group>"; };
 		C0E5A5EAD40C82EFD0EE58D0 /* Pods_iosApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iosApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -374,6 +376,7 @@
 				B64A9C8E2B09E5E20099D0EA /* RoundedRectLabel.swift */,
 				B64A9D042B0BBAE10099D0EA /* ZLCameraView.swift */,
 				B6F56DF62B12E56A003CB1BE /* PreviewVideoView.swift */,
+				B6F56DFA2B14E797003CB1BE /* OrderInfoView.swift */,
 			);
 			path = view;
 			sourceTree = "<group>";
@@ -749,6 +752,7 @@
 				B64A9D612B0BBB7D0099D0EA /* ZLAlbumListCell.swift in Sources */,
 				B64A9C872B09D7950099D0EA /* UploadUtils.swift in Sources */,
 				B64A9D832B0BBB7D0099D0EA /* PHAsset+ZLPhotoBrowser.swift in Sources */,
+				B6F56DFB2B14E797003CB1BE /* OrderInfoView.swift in Sources */,
 				B64A9D7A2B0BBB7D0099D0EA /* UIImage+ZLPhotoBrowser.swift in Sources */,
 				B64A9D872B0BBB7D0099D0EA /* ZLBaseStickertState.swift in Sources */,
 				B64A9CA52B0A1BD00099D0EA /* PhotoLibrary.swift in Sources */,

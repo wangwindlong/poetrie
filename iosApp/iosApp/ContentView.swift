@@ -40,7 +40,7 @@ struct ContentView: View {
                            isActive: $viewModel.showScan,
                            label: { Text("扫描条码").font(.title).padding()}
             )
-            NavigationLink(destination: TestContent(), isActive: $viewModel.hasBarcode, label: {
+            NavigationLink(destination: OrderInfoView(), isActive: $viewModel.hasBarcode, label: {
                 EmptyView()
             })
         }
