@@ -36,6 +36,7 @@ struct CameraViewControllerWrapper: UIViewControllerRepresentable {
         }
         camera.libraryBlock = {
             exit = true
+            data.photoLibrary = true
         }
         camera.isCompress = {
             isCompress

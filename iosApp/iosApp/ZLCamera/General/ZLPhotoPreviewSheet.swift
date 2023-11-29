@@ -421,7 +421,7 @@ public class ZLPhotoPreviewSheet: UIView {
         }
     }
     
-    private func showNoAuthorityAlert() {
+    func showNoAuthorityAlert() {
         let action = ZLCustomAlertAction(title: localLanguageTextValue(.ok), style: .default) { _ in
             ZLPhotoConfiguration.default().noAuthorityCallback?(.library)
         }
@@ -473,7 +473,7 @@ public class ZLPhotoPreviewSheet: UIView {
         }
     }
     
-    @objc private func photoLibraryBtnClick() {
+    @objc func photoLibraryBtnClick() {
         PHPhotoLibrary.shared().unregisterChangeObserver(self)
         animate = false
         showThumbnailViewController()

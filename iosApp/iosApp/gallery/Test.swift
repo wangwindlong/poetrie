@@ -56,6 +56,9 @@ struct TestContent: View {
                                 .frame(width: 150, height: 50)
                         )
             }
+            NavigationLink(destination: TestContent(), isActive: $viewModel.photoLibrary) {
+                EmptyView()
+            }
         }
     }
 }

@@ -23,6 +23,7 @@ class ViewModel: ObservableObject {
     @Published var isOriginal = false
     @Published var showScan = false
     @Published var hasBarcode = false
+    @Published var photoLibrary = false
     @Published var isError = false
     @Published var errorMsg: String? = nil
     
