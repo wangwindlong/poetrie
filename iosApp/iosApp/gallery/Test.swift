@@ -9,6 +9,8 @@
 import Foundation
 import SwiftUI
 import shared
+import PhotosUI
+import CoreTransferable
 
 struct TestContent: View {
     @EnvironmentObject var viewModel: ViewModel
@@ -17,6 +19,9 @@ struct TestContent: View {
     @State private var isVideoToggled = false
     @State private var isToggled = false
     @State var itemSize: CGSize = CGSize()
+    
+    @State private var selectedImages: [UIImage] = []
+       @State private var selectedVideo: URL?
     
     func getToggled(_ index: Int) -> Binding<Bool> {
         switch index {
@@ -56,9 +61,72 @@ struct TestContent: View {
                                 .frame(width: 150, height: 50)
                         )
             }
-            NavigationLink(destination: TestContent(), isActive: $viewModel.photoLibrary) {
-                EmptyView()
+            NavigationLink(destination: MultipleSelectView(), isActive: $viewModel.photoLibrary) {
+                TTT()
             }
+            ImagePicker(selectedImages: $selectedImages)
+                            .frame(height: 200)
+
+                        VideoPicker(selectedVideo: $selectedVideo)
+                            .frame(height: 200)
+//            Button("Select Image") {
+//                            let picker = UIImagePickerController()
+//                            picker.delegate = self
+//                            picker.sourceType = .photoLibrary
+//                            present(picker, animated: true)
+//                        }
+        }
+    }
+}
+
+struct TTT: View {
+    var body: some View {
+        
+        Text("这个是测试")
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .font(.system(size: 8))
+            .frame(maxWidth: .infinity)
+//                    .foregroundColor(.white)
+            .multilineTextAlignment(.leading)
+            .onAppear() {
+                print("TTT body")
+            }
+    }
+}
+
+struct MultipleSelectView: View {
+    @State var images: [UIImage] = []
+    @State var selectedItems: [PhotosPickerItem] = []
+    
+    var body: some View {
+        VStack {
+            ForEach(images, id:\.cgImage){ image in
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 250, height: 250)
+            }
+            Spacer()
+            PhotosPicker(selection: $selectedItems, matching: .images) {
+                Text("Pick Photo")
+            }
+            .onChange(of: selectedItems) { selectedItems in
+                 images = []
+                 for item in selectedItems {
+                     item.loadTransferable(type: Data.self) { result in
+                         switch result {
+                         case .success(let imageData):
+                             if let imageData {
+                                 self.images.append(UIImage(data: imageData)!)
+                             } else {
+                                 print("No supported content type found.")
+                             }
+                         case .failure(let error):
+                             print(error)
+                         }
+                     }
+                 }
+             }
         }
     }
 }

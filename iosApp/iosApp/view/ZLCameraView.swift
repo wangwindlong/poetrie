@@ -36,7 +36,9 @@ struct CameraViewControllerWrapper: UIViewControllerRepresentable {
         }
         camera.libraryBlock = {
             exit = true
-            data.photoLibrary = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                data.photoLibrary = true
+            }
         }
         camera.isCompress = {
             isCompress

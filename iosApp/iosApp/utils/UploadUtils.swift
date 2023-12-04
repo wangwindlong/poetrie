@@ -40,7 +40,7 @@ enum UploadUtils {
         let put = QCloudCOSXMLUploadObjectRequest<AnyObject>()
         put.bucket = BUCKET_ID // bucket id
         put.object = picPath // 上传路径
-        put.body = NSURL.fileURL(withPath: url.absoluteString) as AnyObject
+        put.body = try! Data(contentsOf: url) as AnyObject
         put.setFinish { res, error in
             onComplete(res)
             if let error {
